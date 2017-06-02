@@ -15,29 +15,21 @@ final ShimmerImageView shimmerView = (ShimmerImageView)findViewById(R.id.shimmer
 shimmerView.setImageResource(R.drawable.ic_cake_black);
 DrawableCompat.setTint(shimmerView.getDrawable(), Color.parseColor("#CDD1D4"));
 
-MaskSpecs maskSpecs = new MaskSpecs();
+MaskSpecs maskSpecs = new MaskSpecs(); // Can customize the effect with MaskSpecs
 maskSpecs.setAnimationDuration(1200L);
 shimmerView.setMaskSpecs(maskSpecs);
 
-findViewById(R.id.startAnimation).setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        shimmerView.startAnimation();
-    }
-});
+shimmerView.startAnimation(); // Must call startAnimation()
 ```
 
 Kotlin:
 
 ```Kotlin
 
-with(shimmerImageView){
+with(shimmerImageView) {
     setImageResource(R.drawable.ic_cake_black)
     DrawableCompat.setTint(drawable, Color.parseColor("#CDD1D4"))
-    maskSpecs = MaskSpecs(animationDuration = 1200L)
-}
-
-startAnimation.setOnClickListener {
-    shimmerImageView.startAnimation()
+    maskSpecs = MaskSpecs(animationDuration = 1200L) // Can customize the effect with MaskSpecs
+    startAnimation() // Must call startAnimation()
 }
 ```
