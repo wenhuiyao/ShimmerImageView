@@ -21,7 +21,7 @@ data class MaskSpecs(var maskColor: Int = 0xFFDDDDDD.toInt(),
                      var startDelayed: Long = 0L)
 
 /**
- * Create shimmering effect on a drawable
+ * Extend ImageView to add shimmer effect
  */
 class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : AppCompatImageView(context, attrs, defStyleAttr) {

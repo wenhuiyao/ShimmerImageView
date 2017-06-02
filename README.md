@@ -1,5 +1,5 @@
 # ShimmerImageView
-Add shimmer effect to an ImageView
+Add shimmer effect to an image. To use with Views, take a look at [ShimmerView](https://github.com/facebook/shimmer-android)
 
 
 ![Alt text](graphic/shimmer.gif/?raw=true "Optional Title")
