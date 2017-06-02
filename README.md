@@ -1,5 +1,5 @@
 # ShimmerImageView
-Add shimmering effect to a drawable
+Add shimmer effect to an ImageView
 
 
 ![Alt text](graphic/shimmer.gif/?raw=true "Optional Title")
