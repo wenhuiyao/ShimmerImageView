@@ -8,7 +8,6 @@ import android.graphics.Color.TRANSPARENT
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
-import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
 import kotlin.properties.Delegates
@@ -75,7 +74,7 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
         }
     }
 
-    private fun <T : View> T.runAfterLaidOut(block: T.() -> Unit) {
+    private inline fun runAfterLaidOut(crossinline block: () -> Unit) {
         if (ViewCompat.isLaidOut(this)) {
             block()
         } else {
