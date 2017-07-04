@@ -1,4 +1,4 @@
-package com.android.wenhui
+package com.wenhui.shimmerimageview
 
 import android.animation.ValueAnimator
 import android.content.Context

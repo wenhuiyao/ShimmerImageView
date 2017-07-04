@@ -1,4 +1,4 @@
-package wenhui.com.shimmerimageview;
+package com.wenhui.shimmerimageview;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -6,12 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import com.android.wenhui.MaskSpecs;
-import com.android.wenhui.ShimmerImageView;
-
-/**
- * Created by wyao on 6/1/17.
- */
 
 public class MainJavaActivity extends AppCompatActivity {
 
