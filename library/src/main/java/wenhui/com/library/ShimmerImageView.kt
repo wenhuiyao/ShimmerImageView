@@ -12,6 +12,9 @@ import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
 import kotlin.properties.Delegates
 
+/**
+ * Specification of the shimmering effect
+ */
 data class MaskSpecs(var maskColor: Int = 0xFFDDDDDD.toInt(),
                      var intensity: Float = 0f,
                      var dropOff: Float = 0.3f,
@@ -20,7 +23,9 @@ data class MaskSpecs(var maskColor: Int = 0xFFDDDDDD.toInt(),
                      var startDelayed: Long = 0L)
 
 /**
- * Extend ImageView to add shimmer effect
+ * Extend ImageView to add shimmer effect, to customize it, use [MaskSpecs].
+ *
+ * Use [startAnimation] and [stopAnimation] to control the animation
  */
 class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : AppCompatImageView(context, attrs, defStyleAttr) {
@@ -38,7 +43,7 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
     private val widthFloat get() = width.toFloat()
     private val heightFloat get() = height.toFloat()
 
-    private val paint: Paint by lazy {
+    private val paint: Paint by lazy(LazyThreadSafetyMode.NONE) {
         Paint().apply {
             isAntiAlias = true
             xfermode = PorterDuffXfermode(maskSpecs.maskMode)
@@ -53,23 +58,21 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
 
 
     fun startAnimation() {
-        if (isAnimationRunning()) return
+        if (drawable == null || isAnimationRunning()) return
 
-        drawable?.let {
-            runAfterLaidOut {
-                val startWidth = width + (maskSpecs.startDelayed / maskSpecs.animationDuration.toFloat()).toInt()
-                ValueAnimator.ofInt(-(startWidth + width), width).run {
-                    animation = this
-                    duration = maskSpecs.animationDuration + maskSpecs.startDelayed
-                    repeatCount = ValueAnimator.INFINITE
-                    repeatMode = ValueAnimator.RESTART
-                    interpolator = DecelerateInterpolator()
-                    addUpdateListener {
-                        maskOffsetX = (it.animatedValue as Int).toFloat()
-                        invalidate()
-                    }
-                    start()
+        runAfterLaidOut {
+            val startWidth = width + (maskSpecs.startDelayed / maskSpecs.animationDuration.toFloat()).toInt()
+            ValueAnimator.ofInt(-(startWidth + width), width).run {
+                animation = this
+                duration = maskSpecs.animationDuration + maskSpecs.startDelayed
+                repeatCount = ValueAnimator.INFINITE
+                repeatMode = ValueAnimator.RESTART
+                interpolator = DecelerateInterpolator()
+                addUpdateListener {
+                    maskOffsetX = (it.animatedValue as Int).toFloat()
+                    invalidate()
                 }
+                start()
             }
         }
     }
