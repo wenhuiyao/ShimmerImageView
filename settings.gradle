@@ -1,1 +1,1 @@
-include ':app', ':shimmer-imageview'
+include ':example', ':shimmer-imageview'
