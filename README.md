@@ -38,5 +38,5 @@ with(shimmerImageView) {
 #### Usage
 gradle:
 ```Groovy
-compile 'com.wenhui:shimmer-imageview:0.3.0'
+compile 'com.wenhui:shimmer-imageview:0.3.2'
 ```
