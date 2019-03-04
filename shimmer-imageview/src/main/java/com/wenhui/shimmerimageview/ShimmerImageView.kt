@@ -5,11 +5,11 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
-import androidx.core.view.ViewCompat
 import android.util.AttributeSet
 import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.ViewCompat
 import kotlin.properties.Delegates
 
 /**
@@ -32,8 +32,7 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     private var maskBitmap: Bitmap? = null
     private var maskRenderCanvas: Canvas? = null
-    private var renderMaskBitmap by Delegates.observable<Bitmap?>(null) {
-        _, _, newValue ->
+    private var renderMaskBitmap by Delegates.observable<Bitmap?>(null) { _, _, newValue ->
         maskRenderCanvas = newValue?.let { Canvas().apply { setBitmap(newValue) } }
     }
 
@@ -94,6 +93,7 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
     fun stopAnimation() {
         animation?.cancel()
         animation = null
+        invalidate()
     }
 
     fun isAnimationRunning() = animation != null
@@ -135,17 +135,17 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
         }
     }
 
-    private fun tryObtainRenderMaskBitmap() = renderMaskBitmap ?: createBitmap(width, height)?.apply { renderMaskBitmap = this }
+    private fun tryObtainRenderMaskBitmap() = renderMaskBitmap
+            ?: createBitmap(width, height)?.apply { renderMaskBitmap = this }
 
     private fun drawMaskToBitmap() {
-        getMaskBitmap()?.let {
-            maskRenderCanvas?.run {
-                save()
-                clipRect(maskOffsetX, 0f, maskOffsetX + it.width, it.height.toFloat())
-                super.draw(this)
-                drawBitmap(it, maskOffsetX, 0f, paint)
-                restore()
-            }
+        val bitmap = getMaskBitmap() ?: return
+        maskRenderCanvas?.run {
+            save()
+            clipRect(maskOffsetX, 0f, maskOffsetX + bitmap.width, bitmap.height.toFloat())
+            super.draw(this)
+            drawBitmap(bitmap, maskOffsetX, 0f, paint)
+            restore()
         }
     }
 
@@ -169,7 +169,7 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
     private fun createBitmap(width: Int, height: Int): Bitmap? {
         try {
             return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        } catch(ome: OutOfMemoryError) {
+        } catch (ome: OutOfMemoryError) {
             return null
         }
     }

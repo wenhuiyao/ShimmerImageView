@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.wenhui.shimmerimageview.ShimmerImageView
         android:id="@+id/shimmerImageView"
         android:layout_width="192dp"
         android:layout_height="192dp"
         android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_cake_black"
+        app:tint="#CDD1D4"
         />
 
     <Button
-        android:id="@+id/startAnimation"
+        android:id="@+id/startAnimationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start Animation"

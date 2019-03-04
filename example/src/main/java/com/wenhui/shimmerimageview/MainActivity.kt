@@ -1,8 +1,6 @@
 package com.wenhui.shimmerimageview
 
-import android.graphics.Color
 import android.os.Bundle
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -12,14 +10,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        with(shimmerImageView){
-            setImageResource(R.drawable.ic_cake_black)
-            DrawableCompat.setTint(drawable, Color.parseColor("#CDD1D4"))
-            maskSpecs = MaskSpecs(animationDuration = 1200L)
-        }
+        shimmerImageView.maskSpecs = MaskSpecs(animationDuration = 1000L)
 
-        startAnimation.setOnClickListener {
-            shimmerImageView.startAnimation()
+        startAnimationButton.setOnClickListener {
+            if (shimmerImageView.isAnimationRunning()) {
+                startAnimationButton.text = "Start Animation"
+                shimmerImageView.stopAnimation()
+            } else {
+                startAnimationButton.text = "Stop Animation"
+                shimmerImageView.startAnimation()
+            }
         }
     }
 }
