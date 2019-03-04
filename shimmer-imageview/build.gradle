@@ -19,11 +19,11 @@ ext {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion versions.compile_sdk
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 28
+        minSdkVersion versions.min_sdk
+        targetSdkVersion versions.target_sdk
         versionCode 3
         versionName libraryVersion
 
@@ -39,9 +39,8 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation deps.kotlin_stdlib
+    implementation deps.androidx_appcompat
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {

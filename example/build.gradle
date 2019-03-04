@@ -4,11 +4,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion versions.target_sdk
     defaultConfig {
         applicationId "com.wenhui.shimmerimageview"
-        minSdkVersion 14
-        targetSdkVersion 28
+        minSdkVersion versions.min_sdk
+        targetSdkVersion versions.target_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -22,10 +22,9 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation deps.kotlin_stdlib
+    implementation deps.androidx_appcompat
+    implementation deps.constraintlayout
     implementation project(':shimmer-imageview')
 
     androidTestImplementation ('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
