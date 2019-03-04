@@ -2,9 +2,10 @@ package com.wenhui.shimmerimageview;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.DrawableCompat;
 import android.view.View;
 
 public class MainJavaActivity extends AppCompatActivity {
@@ -15,7 +16,7 @@ public class MainJavaActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        final ShimmerImageView shimmerView = (ShimmerImageView)findViewById(R.id.shimmerImageView);
+        final ShimmerImageView shimmerView = findViewById(R.id.shimmerImageView);
         shimmerView.setImageResource(R.drawable.ic_cake_black);
         DrawableCompat.setTint(shimmerView.getDrawable(), Color.parseColor("#CDD1D4"));
 

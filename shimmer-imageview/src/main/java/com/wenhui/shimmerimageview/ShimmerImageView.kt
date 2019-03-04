@@ -5,11 +5,11 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.AppCompatImageView
+import androidx.core.view.ViewCompat
 import android.util.AttributeSet
 import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
+import androidx.appcompat.widget.AppCompatImageView
 import kotlin.properties.Delegates
 
 /**
@@ -33,7 +33,7 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
     private var maskBitmap: Bitmap? = null
     private var maskRenderCanvas: Canvas? = null
     private var renderMaskBitmap by Delegates.observable<Bitmap?>(null) {
-        property, oldValue, newValue ->
+        _, _, newValue ->
         maskRenderCanvas = newValue?.let { Canvas().apply { setBitmap(newValue) } }
     }
 
