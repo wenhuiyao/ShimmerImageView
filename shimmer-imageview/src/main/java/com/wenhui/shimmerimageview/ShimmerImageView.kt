@@ -6,21 +6,39 @@ import android.graphics.*
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
 import android.util.AttributeSet
-import android.view.ViewTreeObserver
+import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ViewCompat
+import wenhui.com.library.R
 import kotlin.properties.Delegates
+
+private const val DEFAULT_MASK_COLOR = 0xFFDDDDDD.toInt()
+private const val DEFAULT_INTENSITY = 0f
+private const val DEFAULT_DROPOFF = 0.3f
+private val DEFAULT_MASK_MODE = PorterDuff.Mode.SRC_IN
+private const val DEFAULT_ANIMATION_DURATION = 1200
+private const val DEFAULT_START_DELAYED = 0
+
+private fun parseMaskMode(maskModeEnum: Int): PorterDuff.Mode {
+    return when (maskModeEnum) {
+        3 -> PorterDuff.Mode.SRC_IN
+        7 -> PorterDuff.Mode.SRC_ATOP
+        9 -> PorterDuff.Mode.MULTIPLY
+        15 -> PorterDuff.Mode.SCREEN
+        else -> DEFAULT_MASK_MODE
+    }
+}
 
 /**
  * Specification of the shimmering effect
  */
-data class MaskSpecs(var maskColor: Int = 0xFFDDDDDD.toInt(),
-                     var intensity: Float = 0f,
-                     var dropOff: Float = 0.3f,
-                     var maskMode: PorterDuff.Mode = PorterDuff.Mode.SRC_IN,
-                     var animationDuration: Long = 1200L,
-                     var startDelayed: Long = 0L)
+data class MaskSpecs(val maskColor: Int = DEFAULT_MASK_COLOR,
+                     val intensity: Float = DEFAULT_INTENSITY,
+                     val dropOff: Float = DEFAULT_DROPOFF,
+                     val maskMode: PorterDuff.Mode = DEFAULT_MASK_MODE,
+                     val animationDuration: Long = DEFAULT_ANIMATION_DURATION.toLong(),
+                     val startDelayed: Long = DEFAULT_START_DELAYED.toLong())
 
 /**
  * Extend ImageView to add shimmer effect, to customize it, use [MaskSpecs].
@@ -55,14 +73,51 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
             resetAnimation()
         }
 
+    var isAnimationRunning: Boolean = false
+        private set
+
+    init {
+        attrs?.let {
+            val a = context.obtainStyledAttributes(attrs, R.styleable.ShimmerImageView)
+            val maskColor = a.getColor(R.styleable.ShimmerImageView_maskSpecs_maskColor, DEFAULT_MASK_COLOR)
+            val intensity = a.getFloat(R.styleable.ShimmerImageView_maskSpecs_intensity, DEFAULT_INTENSITY)
+            val dropOff = a.getFloat(R.styleable.ShimmerImageView_maskSpecs_dropOff, DEFAULT_DROPOFF)
+            val maskMode = parseMaskMode(a.getInt(R.styleable.ShimmerImageView_maskSpecs_maskMode, -1))
+            val animationDuration = a.getInt(R.styleable.ShimmerImageView_maskSpecs_animationDuration, DEFAULT_ANIMATION_DURATION)
+            val startDelayed = a.getInt(R.styleable.ShimmerImageView_maskSpecs_startDelayed, DEFAULT_START_DELAYED)
+            val startAnimation = a.getBoolean(R.styleable.ShimmerImageView_startAnimation, false)
+            a.recycle()
+
+            maskSpecs = MaskSpecs(
+                    maskColor = maskColor,
+                    intensity = intensity,
+                    dropOff = dropOff,
+                    maskMode = maskMode,
+                    animationDuration = animationDuration.toLong(),
+                    startDelayed = startDelayed.toLong()
+            )
+
+            if (startAnimation) {
+                startAnimation()
+            }
+        }
+    }
 
     fun startAnimation() {
-        if (drawable == null || isAnimationRunning()) return
+        if (isAnimationRunning) return
 
+        if (drawable == null) {
+            isAnimationRunning = false
+            return
+        }
+
+        isAnimationRunning = true
         runAfterLaidOut {
+            // If animation is cancelled already, make sure we don't start the animation
+            if (!isAnimationRunning) return@runAfterLaidOut
+
             val startWidth = width + (maskSpecs.startDelayed / maskSpecs.animationDuration.toFloat()).toInt()
-            ValueAnimator.ofInt(-(startWidth + width), width).run {
-                animation = this
+            animation = ValueAnimator.ofInt(-(startWidth + width), width).apply {
                 duration = maskSpecs.animationDuration + maskSpecs.startDelayed
                 repeatCount = ValueAnimator.INFINITE
                 repeatMode = ValueAnimator.RESTART
@@ -79,31 +134,32 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
     private inline fun runAfterLaidOut(crossinline block: () -> Unit) {
         if (ViewCompat.isLaidOut(this)) {
             block()
-        } else {
-            viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    viewTreeObserver.removeOnPreDrawListener(this)
-                    block()
-                    return false
-                }
-            })
+            return
         }
+
+        addOnLayoutChangeListener(object : OnLayoutChangeListener {
+            override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int,
+                                        oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+                removeOnLayoutChangeListener(this)
+                block()
+            }
+        })
     }
 
     fun stopAnimation() {
         animation?.cancel()
         animation = null
+        isAnimationRunning = false
+        maskOffsetX = 0f
+        maskBitmap = null
+        renderMaskBitmap = null
         invalidate()
     }
 
-    fun isAnimationRunning() = animation != null
-
     private fun resetAnimation() {
-        val animationStarted = isAnimationRunning()
+        val animationStarted = isAnimationRunning
         stopAnimation()
         paint.xfermode = PorterDuffXfermode(maskSpecs.maskMode)
-        maskBitmap = null
-        renderMaskBitmap = null
         if (animationStarted) {
             startAnimation()
         }
@@ -111,7 +167,9 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        resetAnimation()
+        if (changed) {
+            resetAnimation()
+        }
     }
 
     override fun draw(canvas: Canvas?) {
@@ -127,7 +185,7 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     private fun drawMaskUsingBitmap(canvas: Canvas?) {
-        if (!isAnimationRunning()) return
+        if (!isAnimationRunning) return
 
         tryObtainRenderMaskBitmap()?.let {
             drawMaskToBitmap()
@@ -153,6 +211,7 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
         maskBitmap = this
         val canvas = Canvas(this)
         val paint = Paint().apply {
+            isAntiAlias = true
             shader = LinearGradient(widthFloat, 0f, 0f, 0f, getGradientColors(), getGradientPositions(), Shader.TileMode.CLAMP)
             colorFilter = PorterDuffColorFilter(maskSpecs.maskColor, PorterDuff.Mode.SRC_IN)
         }
@@ -167,10 +226,10 @@ class ShimmerImageView @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     private fun createBitmap(width: Int, height: Int): Bitmap? {
-        try {
-            return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        return try {
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         } catch (ome: OutOfMemoryError) {
-            return null
+            null
         }
     }
 }

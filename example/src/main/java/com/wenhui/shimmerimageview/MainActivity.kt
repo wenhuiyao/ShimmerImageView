@@ -10,16 +10,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        shimmerImageView.maskSpecs = MaskSpecs(animationDuration = 1000L)
-
+        updateStartAnimationButton()
         startAnimationButton.setOnClickListener {
-            if (shimmerImageView.isAnimationRunning()) {
-                startAnimationButton.text = "Start Animation"
+            if (shimmerImageView.isAnimationRunning) {
                 shimmerImageView.stopAnimation()
             } else {
-                startAnimationButton.text = "Stop Animation"
                 shimmerImageView.startAnimation()
             }
+            updateStartAnimationButton()
         }
     }
+
+    private fun updateStartAnimationButton() {
+        if (shimmerImageView.isAnimationRunning) {
+            startAnimationButton.text = "Stop Animation"
+        } else {
+            startAnimationButton.text = "Start Animation"
+        }
+    }
+
 }

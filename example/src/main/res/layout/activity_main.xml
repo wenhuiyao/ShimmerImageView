@@ -11,6 +11,7 @@
         android:layout_gravity="center"
         app:srcCompat="@drawable/ic_cake_black"
         app:tint="#CDD1D4"
+        app:startAnimation="true"
         />
 
     <Button

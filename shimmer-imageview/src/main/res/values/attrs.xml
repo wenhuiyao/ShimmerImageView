@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ShimmerImageView">
+        <!-- automatically start animation provided there is already a drawable set-->
+        <attr name="startAnimation" format="boolean"/>
+        <attr name="maskSpecs_maskColor" format="color"/>
+        <attr name="maskSpecs_intensity" format="float"/>
+        <attr name="maskSpecs_dropOff" format="float"/>
+        <attr name="maskSpecs_maskMode" format="enum">
+            <enum name="src_in" value="3"/>
+            <enum name="src_atop" value="7"/>
+            <enum name="multiply" value="9"/>
+            <enum name="screen" value="15"/>
+        </attr>
+        <attr name="maskSpecs_animationDuration" format="integer"/>
+        <attr name="maskSpecs_startDelayed" format="integer"/>
+    </declare-styleable>
+
+</resources>
