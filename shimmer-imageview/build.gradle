@@ -2,8 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 ext {
-    libraryVersion = "0.4.0"
-
     siteUrl = 'https://github.com/wenhuiyao/ShimmerImageView' // Homepage URL of the library
     gitUrl = 'https://github.com/wenhuiyao/ShimmerImageView.git' // Git repository URL
 
@@ -25,7 +23,7 @@ android {
         minSdkVersion versions.min_sdk
         targetSdkVersion versions.target_sdk
         versionCode 4
-        versionName libraryVersion
+        versionName versions.publish_version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

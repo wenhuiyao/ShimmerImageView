@@ -54,7 +54,7 @@ install {
     }
 }
 
-version = libraryVersion
+version = versions.publish_version
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs

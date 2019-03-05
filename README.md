@@ -7,36 +7,23 @@ Add shimmer effect to an image. To use with Views, take a look at Facebook's [Sh
 
 #### Example
 
-Java:
+Usage
 
-```Java
-
-final ShimmerImageView shimmerView = (ShimmerImageView)findViewById(R.id.shimmerImageView);
-shimmerView.setImageResource(R.drawable.ic_cake_black);
-DrawableCompat.setTint(shimmerView.getDrawable(), Color.parseColor("#CDD1D4"));
-
-MaskSpecs maskSpecs = new MaskSpecs(); // Can customize the effect with MaskSpecs
-maskSpecs.setAnimationDuration(1200L);
-shimmerView.setMaskSpecs(maskSpecs);
-
-shimmerView.startAnimation(); // Must call startAnimation()
+```XML
+<com.wenhui.shimmerimageview.ShimmerImageView
+    ......
+    app:startAnimation="true"
+    app:maskSpecs_maskMode="src_in"
+    app:maskSpecs_dropOff="0.3"
+    app:maskSpecs_maskColor="#DDDDDD"
+    app:maskSpecs_animationDuration="2000"
+    app:maskSpecs_intensity="0.1"
+    app:maskSpecs_startDelayed="0"
+    />
 ```
-
-Kotlin:
-
-```Kotlin
-
-with(shimmerImageView) {
-    setImageResource(R.drawable.ic_cake_black)
-    DrawableCompat.setTint(drawable, Color.parseColor("#CDD1D4"))
-    maskSpecs = MaskSpecs(animationDuration = 1200L) // Can customize the effect with MaskSpecs
-    startAnimation() // Must call startAnimation()
-}
-```
-
 
 #### Usage
 gradle:
 ```Groovy
-compile 'com.wenhui:shimmer-imageview:0.3.2'
+compile 'com.wenhui:shimmer-imageview:0.4.0'
 ```

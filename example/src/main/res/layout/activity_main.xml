@@ -12,6 +12,12 @@
         app:srcCompat="@drawable/ic_cake_black"
         app:tint="#CDD1D4"
         app:startAnimation="true"
+        app:maskSpecs_maskMode="src_in"
+        app:maskSpecs_dropOff="0.3"
+        app:maskSpecs_maskColor="#DDDDDD"
+        app:maskSpecs_animationDuration="2000"
+        app:maskSpecs_intensity="0.1"
+        app:maskSpecs_startDelayed="0"
         />
 
     <Button
